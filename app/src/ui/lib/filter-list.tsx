@@ -340,11 +340,24 @@ export class FilterList<T extends IFilterListItem> extends React.Component<
   private onSelectedRowChanged = (index: number, source: SelectionSource) => {
     this.setState({ selectedRow: index })
 
-    if (this.props.onSelectionChanged) {
-      const row = this.state.rows[index]
-      if (row.kind === 'item') {
-        this.props.onSelectionChanged(row.item, source)
-      }
+    if (this.props.onSelectionChanged == null) {
+      return
+    }
+
+    const { rows } = this.state
+    const rowCount = rows.length
+
+    if (index < 0 || index >= rowCount) {
+      log.debug(
+        `Unable to onSelectedRowChanged for row '${index}' as it is outside the bounds of the array [0, ${rowCount}]`
+      )
+      return
+    }
+
+    const row = rows[index]
+
+    if (row.kind === 'item') {
+      this.props.onSelectionChanged(row.item, source)
     }
   }
 
