@@ -358,12 +358,24 @@ export class FilterList<T extends IFilterListItem> extends React.Component<
   }
 
   private onRowClick = (index: number, source: ClickSource) => {
-    if (this.props.onItemClick) {
-      const row = this.state.rows[index]
+    if (this.props.onItemClick == null) {
+      return
+    }
 
-      if (row.kind === 'item') {
-        this.props.onItemClick(row.item, source)
-      }
+    const { rows } = this.state
+    const rowCount = rows.length
+
+    if (index < 0 || index >= rowCount) {
+      log.debug(
+        `Unable to onRowClick for row ${index} as it is outside the bounds of the array [0, ${rowCount}]`
+      )
+      return
+    }
+
+    const row = rows[index]
+
+    if (row.kind === 'item') {
+      this.props.onItemClick(row.item, source)
     }
   }
 
